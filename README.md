@@ -1,1 +1,1 @@
-# e-commerce-restfulapi
+# e-commerce express.js RESTful Api codebase
