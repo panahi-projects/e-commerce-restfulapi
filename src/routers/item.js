@@ -1,6 +1,5 @@
 const express = require('express');
 const Auth = require('../middleware/auth');
-const item = require('../models/item');
 const Item = require('../models/item');
 
 const router = new express.Router();
@@ -36,7 +35,6 @@ router.get('/items/:id', async (req, res) => {
 
 // fetch all items
 router.get('/items', async (req, res) => {
-    debugger
     try {
         const items = await Item.find({});
         if (!items.length) {
