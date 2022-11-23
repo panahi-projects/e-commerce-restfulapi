@@ -34,5 +34,12 @@ const cartSchema = new mongoose.Schema(
     }
 );
 
+cartSchema.methods.billCalculation = function () {
+    const cart = this;
+    return cart.items.reduce((acc, currentItem) => {
+        return acc + currentItem.price * currentItem.quantity;
+    }, 0);
+}
+
 const Cart = mongoose.model('Cart', cartSchema);
 module.exports = Cart;
