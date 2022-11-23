@@ -39,23 +39,25 @@ router.post('/carts', Auth, async (req, res) => {
         //If cart already exist for the current user
         if (cart) {
             const itemIndex = cart.items.findIndex(item => {
-                item.itemId === itemId
+                return item.itemId.equals(itemId)
             });
 
             //check if product exists or not
             if (itemIndex > -1) {
                 let product = cart.items[itemIndex];
                 product.quantity += quantity;
-                cart.bill = Cart.billCalculation();
+                cart.bill = cart.billCalculation();
                 cart.items[itemIndex] = product;
                 await cart.save();
+
                 res.status(200).send(cart);
             }
             else {
                 let newProduct = { itemId, quantity, name, price };
                 cart.items.push(newProduct);
-                cart.bill = Cart.billCalculation();
+                cart.bill = cart.billCalculation();
                 await cart.save();
+                
                 res.status(200).send(cart);
             }
         }
@@ -66,6 +68,7 @@ router.post('/carts', Auth, async (req, res) => {
                 items: [{ itemId, quantity, name, price }],
                 bill: quantity * price
             });
+            await newCart.save();
             return res.status(201).send(newCart);
         }
     }
@@ -90,7 +93,7 @@ router.delete('/carts/', Auth, async (req, res) => {
                 cart.bill = 0;
             }
             cart.items.splice(itemIndex, 1);
-            cart.bill = Cart.billCalculation();
+            cart.bill = cart.billCalculation();
             cart = await cart.save();
 
             res.status(200).send(cart);
@@ -100,3 +103,5 @@ router.delete('/carts/', Auth, async (req, res) => {
         res.status(400).send(error);
     }
 });
+
+module.exports = router
