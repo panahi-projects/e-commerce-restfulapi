@@ -4,8 +4,22 @@ const User = require('../models/user');
 
 const router = new express.Router();
 
+// Get current user profile by _id (based on the token)
+router.get('/user', Auth, async(req, res) => {
+    try{
+        const user = await User.findOne({ _id: req.user._id});
+        if(!user){
+            return res.status(404).send("No user found!");
+        }
+        res.status(200).send(user);
+    }
+    catch(error){
+        res.status(400).send(error);
+    }
+});
+
 // signup
-router.post('/users', async (req, res) => {
+router.post('/user', async (req, res) => {
     const user = new User(req.body);
     try {
         await user.save();
@@ -19,7 +33,6 @@ router.post('/users', async (req, res) => {
 
 // login
 router.post('/user/login', async (req, res) => {
-    debugger
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
@@ -44,7 +57,7 @@ router.post('/user/logout', Auth, async (req, res) => {
 });
 
 // logout all
-router.post('/users/logoutAll', Auth, async (req, res) => {
+router.post('/user/logoutAll', Auth, async (req, res) => {
     try {
         req.user.tokens = []
         await req.user.save()
