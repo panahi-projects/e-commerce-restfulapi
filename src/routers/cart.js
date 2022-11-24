@@ -18,7 +18,7 @@ router.get('/carts', Auth, async (req, res) => {
         }
     }
     catch (error) {
-        res.status(400).send(error);
+        res.status(500).send(error);
     }
 });
 
@@ -63,12 +63,11 @@ router.post('/carts', Auth, async (req, res) => {
         }
         else {
             //no cart exists, create one
-            const newCart = new Cart({
+            const newCart = await Cart.create({
                 owner,
                 items: [{ itemId, quantity, name, price }],
                 bill: quantity * price
             });
-            await newCart.save();
             return res.status(201).send(newCart);
         }
     }
